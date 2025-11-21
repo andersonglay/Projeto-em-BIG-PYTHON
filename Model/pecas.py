@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 ANO = datetime.now().year
 try:
-    df_csv = pd.read_csv("dados/pecas.csv",encoding="utf-8-sig" )
+    df_csv = pd.read_csv("dados/pecas.csv",encoding="utf-8-sig")
 except FileNotFoundError:
     print("ERRO: O arquivo 'dados/pecas.csv' não foi encontrado. Verifique o caminho.")
     exit()
@@ -21,7 +21,7 @@ df_csv = df_csv.drop(columns=['Dia', 'Mês', 'Ano', 'Data_Completa'], errors='ig
 
 # --- Exibição dos Resultados ---
 print("Processamento concluído com sucesso!")
-print(f"Dia assumida para os registros: {ANO}")
+print(f"Ano assumido para os registros: {ANO}")
 print("\nDimensões do DataFrame:", df_csv.shape)
-print("\nPrimeiras 5 linhas (com a nova coluna 'Data_Reposicao'):")
-print(df_csv.head(300))
+print("\nPrimeiras linhas:")
+print(df_csv.head(6))
