@@ -2,9 +2,9 @@ import pandas as pd
 from datetime import datetime
 ANO = datetime.now().year
 try:
-    df_csv = pd.read_csv("Dados/servico.csv",encoding="utf-8-sig" )
+    df_csv = pd.read_csv("dados/servico.csv",encoding="utf-8-sig" )
 except FileNotFoundError:
-    print("ERRO: O arquivo 'Model/servico.csv' não foi encontrado. Verifique o caminho.")
+    print("ERRO: O arquivo 'Dados/servico.csv' não foi encontrado. Verifique o caminho.")
     exit()
 
 colunas_para_remover = [col for col in df_csv.columns if 'Unnamed:' in col]
