@@ -1,6 +1,5 @@
 import pandas as pd
 from datetime import datetime
-<<<<<<< HEAD
 import io
 
 # --- Configuração e Leitura de Dados ---
@@ -8,6 +7,7 @@ ANO = datetime.now().year
 
 try:
     # Tenta ler o arquivo CSV
+    # O encoding "utf-8-sig" é bom para lidar com arquivos que vêm do Excel com BOM
     df_csv = pd.read_csv("dados/colaboradores.csv", encoding="utf-8-sig")
 except FileNotFoundError:
     print("❌ ERRO: O arquivo 'dados/colaboradores.csv' não foi encontrado. Verifique o caminho.")
@@ -19,25 +19,35 @@ except FileNotFoundError:
 
 df = df_csv.copy()
 
-# 🎯 CORREÇÃO: Renomear as colunas para os nomes que o MELT espera
+# 🎯 CORREÇÃO: Renomear as colunas
+# Garantindo que os nomes no MELT sejam usados após a renomeação.
 df.rename(columns={
-    # Coluna de Mês
+    # Coluna de Mês (Assumindo que você quer mudar 'Mês 2025' para 'Mes')
     'Mês 2025': 'Mes', 
     
-    # Coluna Lázaro
+    # Coluna Lázaro (Simplificação de nome, se necessário)
     'Lázaro': 'Lazaro', 
     
-    # Coluna Conjunto
+    # Coluna Conjunto (Simplificação de nome, se necessário)
     'Conjunto (Leandro & Lázaro)': 'Conjunto' 
+    
+    # Adicione aqui outras colunas que precisam de renomeação, por exemplo:
+    # 'Nome Original do Leandro': 'Leandro',
 }, inplace=True)
 
-# Verificação opcional:
-# print("Colunas após renomeação:", df.columns.tolist()) 
+# Verificação das Colunas: 
+# É crucial que as colunas 'Leandro', 'Lazaro', e 'Conjunto' estejam agora no DataFrame.
+if 'Leandro' not in df.columns:
+    # Se 'Leandro' não foi renomeado, mas é uma coluna, adicione a renomeação
+    # Exemplo: df.rename(columns={'Nome Real do Leandro': 'Leandro'}, inplace=True)
+    # Se 'Leandro' JÁ é o nome, o bloco de renomeação está ok.
+    pass
 
-# AGORA O MELT FUNCIONA com os nomes simplificados e corrigidos
+# AGORA O MELT DEVE FUNCIONAR
 df_long = df.melt(
     id_vars=['Mes'],
-    value_vars=['Leandro', 'Lazaro', 'Conjunto'], # Usando os novos nomes
+    # A lista value_vars deve conter os nomes das colunas de atendimentos (após a renomeação)
+    value_vars=['Leandro', 'Lazaro', 'Conjunto'], 
     var_name='Colaborador', 
     value_name='Atendimentos_Colaborador'
 )
@@ -46,15 +56,15 @@ df_long = df.melt(
 # 📈 Restante do Código: Agrupamento e Exibição de Resultados
 # ----------------------------------------------------------------------
 
-# Agrupamento Mensal por Colaborador (Substitui 'mensal_semana')
+# Agrupamento Mensal por Colaborador
 mensal_colaborador = (df_long
     .groupby(["Mes", "Colaborador"])["Atendimentos_Colaborador"]
     .sum()
     .unstack("Colaborador", fill_value=0)
 )
 
-# Agrupamento Mensal Total (Substitui 'resample_mensal')
-# Soma a coluna 'Atendimentos' (total do mês original)
+# Agrupamento Mensal Total 
+# Requer que a coluna 'Atendimentos' esteja presente no DataFrame original (df).
 resample_mensal = (df.groupby("Mes")["Atendimentos"]
     .sum()
 )
@@ -75,36 +85,3 @@ print(resample_mensal)
 print("\nProcessamento concluído com sucesso!")
 print("\nPrimeiras linhas do DataFrame após renomeação:")
 print(df.head(6).to_string())
-=======
-
-ANO = datetime.now().year
-
-# --- Leitura segura ---
-try:
-    df_csv = pd.read_csv("dados/colaboradores.csv", encoding="utf-8-sig")
-except FileNotFoundError:
-    print("ERRO: O arquivo 'dados/colaboradores.csv' não foi encontrado. Verifique o caminho.")
-    exit()
-
-# Remove colunas Unnamed
-df_csv = df_csv.drop(columns=[col for col in df_csv.columns if "Unnamed:" in col], errors="ignore")
-
-# Remove linhas totalmente vazias
-df_csv = df_csv.dropna(how='all')
-
-# Criar coluna ano
-df_csv["Ano"] = ANO
-
-# Criar a coluna Data_Completa usando o primeiro dia de cada mês
-df_csv["Data_Completa"] = df_csv["Mes"] + " " + df_csv["Ano"].astype(str)
-
-# Converter para datetime
-df_csv["Data_Servico"] = pd.to_datetime(df_csv["Data_Completa"], format="%B %Y", errors="coerce")
-
-# Exibir resultados
-print("Processamento concluído com sucesso!")
-print(f"Ano assumido para os registros: {ANO}")
-print("\nDimensões do DataFrame:", df_csv.shape)
-print("\nPrimeiras linhas:")
-print(df_csv.head(20))
->>>>>>> bbe20b5a7d38ef6fa5834fce1cf1b1175f7a9906
