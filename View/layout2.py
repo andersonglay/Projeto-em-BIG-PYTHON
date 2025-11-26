@@ -1,10 +1,17 @@
 # view/layout.py
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# Adiciona o diretório pai (raiz do projeto) ao caminho de busca do Python
+# Isso permite que ele encontre a pasta 'Model' no mesmo nível.
+sys.path.append(str(Path(__file__).parent.parent))
+
 from dash import dcc, html
 
 # Alteração aqui: O nome do arquivo do modelo é 'oficina_model.py'
-from model.oficina_model import MechanicWorkshopModel
+from Model.oficina_model import MechanicWorkshopModel
 
 
 def create_layout(model: MechanicWorkshopModel) -> html.Div:
