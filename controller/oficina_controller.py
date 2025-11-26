@@ -1,4 +1,3 @@
-# controller/callbacks.py
 from __future__ import annotations
 
 from dash import Input, Output, dash_table, html
@@ -12,28 +11,29 @@ from Model.oficina_model import MechanicWorkshopModel # Note a capitalização '
 def register_callbacks(app, model: MechanicWorkshopModel) -> None:
     """Registra todos os callbacks da aplicação Dash."""
 
-# --- Gráfico 1: Preço Médio por Tipo de Serviço ---
+    # --- Gráfico 1: Preço Médio por Tipo de Serviço ---
+    # AGORA USA APENAS month-dropdown
     @app.callback(
         Output("graph-avg-price-by-type", "figure"),
         [
-            Input("service-type-dropdown", "value"),
+            # Input("service-type-dropdown", "value"), # REMOVIDO!
             Input("month-dropdown", "value"),
         ],
     )
-    def update_avg_price_graph(service_type, month):
+    def update_avg_price_graph(month):
+        # O argumento service_type foi removido da função e da chamada do modelo
         df = model.average_price_by_type(
-            service_type=service_type,
+            service_type=None, # Define o valor como None, já que o filtro foi removido
             month=month,
         )
 
         if df.empty:
             return px.bar(title="Sem dados para os filtros selecionados.")
 
-        # ESTA É A LINHA CRÍTICA QUE DEVE SER CORRIGIDA:
         fig = px.bar(
             df,
             x="Tipo",
-            y="Preço_Médio",  # <--- CORREÇÃO AQUI: DEVE SER COM UNDERSCORE!
+            y="Preço_Médio",
             title="Preço Médio do Serviço por Categoria",
             labels={"Tipo": "Tipo de Serviço", "Preço_Médio": "Preço Médio (R$)"},
             color="Tipo", 
@@ -43,16 +43,18 @@ def register_callbacks(app, model: MechanicWorkshopModel) -> None:
         return fig
 
     # --- Gráfico 2: Contagem de Serviços por Tipo ---
+    # AGORA USA APENAS month-dropdown
     @app.callback(
         Output("graph-count-by-type", "figure"),
         [
-            Input("service-type-dropdown", "value"),
+            # Input("service-type-dropdown", "value"), # REMOVIDO!
             Input("month-dropdown", "value"),
         ],
     )
-    def update_count_graph(service_type, month):
+    def update_count_graph(month):
+        # O argumento service_type foi removido da função e da chamada do modelo
         df = model.service_count_by_type(
-            service_type=service_type,
+            service_type=None, # Define o valor como None, já que o filtro foi removido
             month=month,
         )
 
@@ -68,18 +70,21 @@ def register_callbacks(app, model: MechanicWorkshopModel) -> None:
         return fig
 
     # --- Gráfico 3: Heatmap Preço Médio por Tipo x Mês ---
+    # AGORA USA month-dropdown como Input para forçar a renderização inicial
     @app.callback(
         Output("graph-heatmap-price-by-month", "figure"),
+        # Adicionamos um Input apenas para garantir que o callback seja executado no carregamento
+        # O valor do mês será ignorado na função.
         [
-            Input("service-type-dropdown", "value"),
-        ],
+            Input("month-dropdown", "value"), 
+        ], 
     )
-    def update_heatmap(service_type):
-        # CORREÇÃO: Usando o método correto do modelo (average_price_by_type_by_month)
-        # O filtro de MÊS é desnecessário aqui, pois o gráfico mostra a distribuição MÊS x TIPO
-        df_long = model.average_price_by_type_by_month(
-            service_type=service_type,
-        )
+    def update_heatmap(month):
+        # O argumento 'month' é aceito apenas para acionar o callback.
+        # Ele é ignorado na chamada do modelo para que o heatmap mostre todos os meses (Tipo x Mês).
+        
+        # Obtém todos os dados, pois não há filtro de service_type na interface
+        df_long = model.average_price_by_type_by_month(service_type=None)
 
         if df_long.empty:
             return px.imshow(
@@ -96,7 +101,6 @@ def register_callbacks(app, model: MechanicWorkshopModel) -> None:
             z="Preço_Médio",
             title="Preço Médio do Serviço por Mês e Tipo",
             color_continuous_scale="Viridis",
-            # CORREÇÃO: A chave no labels deve ser 'Preço_Médio'
             labels=dict(Mês="Mês do Serviço", Tipo="Tipo de Serviço", Preço_Médio="Preço Médio (R$)"),
         )
         
@@ -104,17 +108,18 @@ def register_callbacks(app, model: MechanicWorkshopModel) -> None:
         return fig
 
     # --- Tabela de dados filtrados (Top 10 Serviços mais Caros) ---
+    # AGORA USA APENAS month-dropdown
     @app.callback(
         Output("table-container", "children"),
         [
-            Input("service-type-dropdown", "value"),
+            # Input("service-type-dropdown", "value"), # REMOVIDO!
             Input("month-dropdown", "value"),
         ],
     )
-    def update_table(service_type, month):
-        # CORREÇÃO: Usando o método correto do modelo (top_services_by_price)
+    def update_table(month):
+        # O argumento service_type foi removido da função e da chamada do modelo
         df = model.top_services_by_price(
-            service_type=service_type,
+            service_type=None, # Define o valor como None, já que o filtro foi removido
             month=month,
             top_n=10
         )

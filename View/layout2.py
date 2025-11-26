@@ -27,26 +27,12 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                 "Explore a distribuição e o preço médio dos serviços por tipo e mês de execução."
             ),
             html.Hr(),
-            # --------- Filtros (Tipo de Serviço e Mês) ----------
+            # --------- Filtros (Apenas Mês) ----------
             html.Div(
                 [
-                    # Filtro 1: Tipo de Serviço (Substitui Gênero)
-                    html.Div(
-                        [
-                            html.Label("Tipo de Serviço"),
-                            dcc.Dropdown(
-                                id="service-type-dropdown",
-                                options=[
-                                    {"label": t, "value": t} for t in service_types
-                                ],
-                                value=None,
-                                placeholder="Todos os Tipos",
-                                clearable=True,
-                            ),
-                        ],
-                        style={"width": "48%", "display": "inline-block"},
-                    ),
-                    # Filtro 2: Mês do Serviço (Substitui Duração)
+                    # Filtro 1: Tipo de Serviço (REMOVIDO)
+                    
+                    # Filtro 2: Mês do Serviço (Ajustado para 100% de largura)
                     html.Div(
                         [
                             html.Label("Mês do Serviço"),
@@ -58,10 +44,10 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                                 clearable=True,
                             ),
                         ],
-                        style={
-                            "width": "48%",
+                        style={ # ESTILOS AJUSTADOS PARA 100%
+                            "width": "100%",
                             "display": "inline-block",
-                            "float": "right",
+                            "float": "none", # Removido o float: right
                         },
                     ),
                 ],
