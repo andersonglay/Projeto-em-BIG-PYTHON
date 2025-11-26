@@ -12,12 +12,12 @@ sys.path.append(str(Path(__file__).parent))
 # ---------------------------------------------
 
 # IMPORTAÇÕES ATUALIZADAS:
-from controller.callbacks import register_callbacks
+from controller.oficina_controller import register_callbacks
 from Model.oficina_model import MechanicWorkshopModel # Importa do Model/oficina_model.py
-from View.layout import create_layout                 # Importa do View/layout.py
+from View.layout2 import create_layout                 # Importa do View/layout.py
 
 # Nome do seu arquivo CSV, que está no mesmo nível do app.py
-CSV_FILE_NAME = "planilha_unificada.csv"
+CSV_FILE_NAME = "dados/planilha_unificada.csv"
 
 
 def create_app() -> Dash:
