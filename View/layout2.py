@@ -1,38 +1,32 @@
-# view/layout.py
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-# Adiciona o diretório pai (raiz do projeto) ao caminho de busca do Python
-# Isso permite que ele encontre a pasta 'Model' no mesmo nível.
 sys.path.append(str(Path(__file__).parent.parent))
 
 from dash import dcc, html
 
-# Alteração aqui: O nome do arquivo do modelo é 'oficina_model.py'
 from Model.oficina_model import MechanicWorkshopModel
 
 
 def create_layout(model: MechanicWorkshopModel) -> html.Div:
-    # 1. Obter os novos filtros
+    
     service_types = model.get_available_service_types()
     months = model.get_available_months()
     
     return html.Div(
         [
-            # Mudar título e descrição
+           
             html.H1("Oficina Mecânica – Análise de Serviços e Preços 🛠️"),
             html.P(
                 "Explore a distribuição e o preço médio dos serviços por tipo e mês de execução."
             ),
             html.Hr(),
-            # --------- Filtros (Apenas Mês) ----------
+            
             html.Div(
                 [
-                    # Filtro 1: Tipo de Serviço (REMOVIDO)
-                    
-                    # Filtro 2: Mês do Serviço (Ajustado para 100% de largura)
+                  
                     html.Div(
                         [
                             html.Label("Mês do Serviço"),
@@ -44,17 +38,17 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                                 clearable=True,
                             ),
                         ],
-                        style={ # ESTILOS AJUSTADOS PARA 100%
+                        style={ 
                             "width": "100%",
                             "display": "inline-block",
-                            "float": "none", # Removido o float: right
+                            "float": "none", 
                         },
                     ),
                 ],
                 style={"marginBottom": "20px"},
             ),
             html.Hr(),
-            # --------- Linha de gráficos principais ----------
+            ### Linha de gráficos principais 
             html.Div(
                 [
                     # Gráfico 1: Média de Preço por Tipo
@@ -73,7 +67,7 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                     ),
                 ]
             ),
-            # --------- Heatmap / Tabela de Preço Médio ----------
+            ###  Tabela de Preço Médio 
             html.Div(
                 [
                     html.H3("Preço Médio por Tipo de Serviço × Mês"),
@@ -81,7 +75,7 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                 ],
                 style={"marginTop": "40px"},
             ),
-            # --------- Tabela ----------
+            ### Tabela de Serviços mais Caros
             html.Div(
                 [
                     html.H3("Dados filtrados (Top 10 Serviços mais Caros)"),
