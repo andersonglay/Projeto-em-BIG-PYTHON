@@ -18,7 +18,7 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
     return html.Div(
         [
            
-            html.H1("Oficina Mecânica – Análise de Serviços e Preços 🛠️"),
+            html.H1("Oficina Mecânica – Análise de Serviços e Preços"),
             html.P(
                 "Explore a distribuição e o preço médio dos serviços por tipo e mês de execução."
             ),
@@ -88,5 +88,6 @@ def create_layout(model: MechanicWorkshopModel) -> html.Div:
                 style={"marginTop": "40px"},
             ),
         ],
-        style={"margin": "20px"},
+        style={"margin": "20px",
+            "fontFamily": "Segoe UI, sans-serif"},
     )
